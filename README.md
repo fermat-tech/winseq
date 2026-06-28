@@ -168,6 +168,34 @@ winseq 0.0 0.1 1.0 | ForEach-Object { Write-Host "value: $_" }
 - Renaming the binary changes its name in all usage/error messages (the binary reads `os.Args[0]` at startup).
 - A trailing newline is always written after the last value, matching GNU `seq` behaviour.
 
+## Contributing
+
+This project uses a two-branch workflow to keep `go install @latest` always resolving to a clean tagged version:
+
+- **`dev`** — all development happens here; commit freely
+- **`main`** — only ever updated by merging `dev` at release time, immediately followed by a tag
+
+**Release checklist:**
+```powershell
+# 1. Finish work on dev, then merge to main
+git checkout main
+git merge dev --ff-only
+
+# 2. Tag and push (tag before push so main is never untagged)
+git tag vX.Y.Z
+git push origin main
+git push origin vX.Y.Z
+
+# 3. Build and release
+go build -ldflags "-X main.version=vX.Y.Z" -o winseq.exe .
+gh release create vX.Y.Z winseq.exe --title "vX.Y.Z" --notes "..."
+
+# 4. Switch back to dev for the next cycle
+git checkout dev
+```
+
+`main` must always point to a tagged commit — any untagged commit on `main` causes `go install @latest` to report a pseudo-version (e.g. `v1.0.4-0.20260628031420-83b063bd9071`).
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
