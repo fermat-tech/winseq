@@ -29,15 +29,27 @@ import (
 	"math/big"
 	"os"
 	"path/filepath"
+	"runtime/debug"
 	"strconv"
 	"strings"
 )
 
 var progName string
-var version = "dev"
+// version is overridden at build time via -ldflags "-X main.version=vX.Y.Z"
+// for release binaries. For `go install` users it falls back to the module
+// version embedded in the binary by the Go toolchain. Local `go build` without
+// ldflags reports "dev".
+var version = ""
 
 func init() {
 	progName = strings.TrimSuffix(filepath.Base(os.Args[0]), filepath.Ext(os.Args[0]))
+	if version == "" {
+		if info, ok := debug.ReadBuildInfo(); ok && info.Main.Version != "" && info.Main.Version != "(devel)" {
+			version = info.Main.Version
+		} else {
+			version = "dev"
+		}
+	}
 }
 
 func usage() {
