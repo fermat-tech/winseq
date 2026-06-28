@@ -34,6 +34,7 @@ import (
 )
 
 var progName string
+var version = "dev"
 
 func init() {
 	progName = strings.TrimSuffix(filepath.Base(os.Args[0]), filepath.Ext(os.Args[0]))
@@ -128,7 +129,7 @@ func main() {
 			usage()
 			os.Exit(0)
 		case a == "--version":
-			fmt.Printf("%s 1.0.0\n", progName)
+			fmt.Printf("%s %s\n", progName, version)
 			os.Exit(0)
 		case a == "-w":
 			padZero = true
