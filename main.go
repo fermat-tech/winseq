@@ -158,7 +158,7 @@ func main() {
 			fmtFlag = translateFormat(a[2:])
 			i++
 		default:
-			die(fmt.Sprintf("invalid option -- '%s'", a))
+			die(fmt.Sprintf("invalid option -- '%s'\nTry '%s --help' for more information.", a, progName))
 		}
 	}
 
